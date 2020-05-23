@@ -1,0 +1,30 @@
+<%- include('./partials/header.ejs')%>
+<div
+  class="full-screen bg-dark d-flex justify-content-center align-items-center"
+>
+  <div class="container text-center text-white">
+    <h1><i class="fa fa-envelope mr-3"></i>SMS EASY</h1>
+    <div class="w-50 mx-auto mt-5">
+      <p class="para text-justify">
+        Sending bluk messages via SMS and emails is no longer a nuisance.
+        <b>SMS EASY</b> provides you an easy way to populate your
+        <em>'to'</em> field instantly. Just upload a file containing
+        numbers/emails and type a message and send right away!
+      </p>
+      <div class="d-flex w-100 justify-content-center mt-4">
+        <button
+          class="btn btn-light mr-5 w-25 py-2"
+          data-toggle="modal"
+          data-target="#login"
+        >
+          Log In
+        </button>
+        <button class="btn btn-outline-light w-50 py-2" id="continue">
+          Continue anyway<i class="fa fa-long-arrow-right ml-3"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('./login.ejs') %> <%- include('./register.ejs') %> <%-
+include('./partials/footer.ejs')%>

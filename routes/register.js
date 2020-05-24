@@ -8,13 +8,14 @@ router.post("/register", async (req, res) => {
     const { username, email, pass } = req.body;
     const salt = await bcrypt.genSalt(10);
     const hashedPass = await bcrypt.hash(pass, salt);
+    const id = Date.now();
     await query(
-      `INSERT INTO users VALUES('${Date.now()}', '${username}', '${email}', '${hashedPass}')`
+      `INSERT INTO users VALUES('${id}', '${username}', '${email}', '${hashedPass}')`
     );
   } catch (ex) {
     console.error(ex);
   }
-  res.redirect("/msg");
+  res.redirect(`/msg?id=${id}`);
 });
 
 module.exports = router;

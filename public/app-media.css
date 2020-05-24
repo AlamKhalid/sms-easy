@@ -2,16 +2,31 @@
   .content {
     margin-top: 10%;
   }
+  .main-div {
+    width: 75%;
+  }
 }
 
 @media screen and (max-width: 630px) {
   .content {
     margin-top: 15%;
   }
+  .main-div {
+    width: 90%;
+  }
+  h1 {
+    font-size: 4rem !important;
+  }
 }
 
-@media screen and (max-width: 360px) {
+@media screen and (max-width: 420px) {
   .content {
     margin-top: 18%;
+  }
+  h1 {
+    font-size: 3rem !important;
+  }
+  .para {
+    font-size: 1.1rem;
   }
 }

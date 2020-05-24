@@ -1,12 +1,25 @@
 $(document).ready(function () {
+  $('[data-toggle-second="tooltip"]').tooltip();
+  // clear local storage on close tab
+  window.onbeforeunload = function (e) {
+    window.onunload = function () {
+      window.localStorage.isMySessionActive = "false";
+    };
+    return undefined;
+  };
+  window.onload = function () {
+    window.localStorage.isMySessionActive = "true";
+  };
   // some necessary varraibles
   var flag;
   var flagMessage = "File not uploaded";
   var file, data;
   // as file input is hidden, so opening file input type as the user clicks the btn
-  $("#uploadBtn").click(function () {
-    $("#fileToUpload").click();
-  });
+  $("#uploadBtn")
+    .unbind()
+    .click(function () {
+      $("#fileToUpload").click();
+    });
   // function to run when a user uploads a fule
   $("#fileToUpload").change(function (event) {
     const input = event.target;
@@ -47,32 +60,46 @@ $(document).ready(function () {
     }
   });
   // real function for populating 'to' field
-  $("#sendBtn").click(function () {
-    var body = $("textarea").val();
-    var format = $("input[type='radio'][name='format']:checked").val();
-    var subject = $("#subject").val();
+  $("#sendBtn")
+    .unbind()
+    .click(function () {
+      var body = $("textarea").val();
+      var format = $("input[type='radio'][name='format']:checked").val();
+      var subject = $("#subject").val();
 
-    if (flag) {
-      if (format == "sms") {
-        if (body.length > 0) {
-          $(this).attr("href", `sms:${data}?body=${body}`);
-          location.href = $(this).attr("href");
-        } else showError("Message body is empty");
-      } else if (format == "email") {
-        if (body.length > 0 && subject.length > 0) {
-          $(this).attr(
-            "href",
-            `mailto:${data}?subject=${subject}&body=${body}`
-          );
-          location.href = $(this).attr("href");
-        } else if (subject.length <= 0) showError("Subject is empty");
-        else showError("Message body is empty");
+      if (flag) {
+        if (format == "sms") {
+          if (body.length > 0) {
+            $(this).attr("href", `sms:${data}?body=${body}`);
+            $.post(
+              `http://localhost:3500/add-msg/${localStorage.getItem("user")}`,
+              {
+                message: $("textarea").val(),
+              }
+            );
+            location.href = $(this).attr("href");
+          } else showError("Message body is empty");
+        } else if (format == "email") {
+          if (body.length > 0 && subject.length > 0) {
+            $(this).attr(
+              "href",
+              `mailto:${data}?subject=${subject}&body=${body}`
+            );
+            $.post(
+              `http://localhost:3500/add-msg/${localStorage.getItem("user")}`,
+              {
+                message: $("textarea").val(),
+              }
+            );
+            location.href = $(this).attr("href");
+          } else if (subject.length <= 0) showError("Subject is empty");
+          else showError("Message body is empty");
+        }
+      } else {
+        showError(flagMessage);
       }
-    } else {
-      showError(flagMessage);
-    }
-    return false;
-  });
+      return false;
+    });
 
   // show email related options
   $("#emailBox").click(function () {
@@ -166,7 +193,6 @@ $(document).ready(function () {
 
   // registering user
   $("#register-form").on("submit", function (event) {
-    event.preventDefault();
     let doFocus = true;
     // check input fields
     if ($("#r-user").val().length === 0) {
@@ -204,46 +230,57 @@ $(document).ready(function () {
       $(`#r-cpass-label`).text("* confirm password did not match");
       doFocus = false;
     }
-    if (doFocus) $(this).submit();
+    if (!doFocus) {
+      event.preventDefault();
+    } else {
+      localStorage.setItem("user", $("#r-user").val());
+    }
   });
 
   // signing in user
+  let doFocus = true;
   $("#login-form").on("submit", function (event) {
-    event.preventDefault();
-    let doFocus = true;
-    // check input fields
-    if ($("#user").val().length === 0) {
-      validate("user", doFocus);
-      doFocus = false;
-    } else if ($("#user").val().length > 20) {
-      validate("user", doFocus);
-      doFocus = false;
-      $("#user-label").text("* username can be of max 20 characters");
-    } else {
-      $.get(`http://localhost:3500/get-user/${$("#user").val()}/`, (status) => {
-        if (status) {
-          validate("user", true);
-          $("#user-label").text("* username does not exist");
-          doFocus = false;
-        }
-      });
-    }
-    if ($("#pass").val().length === 0) {
-      validate("pass", doFocus);
-      doFocus = false;
-    } else if (doFocus) {
-      $.get(
-        `http://localhost:3500/get-user/${$("#user").val()}/${$(
-          "#pass"
-        ).val()}/`,
-        (status) => {
-          if (!status) {
-            validate("pass", true);
-            $("#pass-label").text("* password is incorrect");
-            doFocus = false;
-          } else $(this).submit();
-        }
-      );
-    }
+    if (doFocus) {
+      event.preventDefault();
+      // check input fields
+      if ($("#user").val().length === 0) {
+        validate("user", doFocus);
+        doFocus = false;
+      } else if ($("#user").val().length > 20) {
+        validate("user", doFocus);
+        doFocus = false;
+        $("#user-label").text("* username can be of max 20 characters");
+      } else {
+        $.get(
+          `http://localhost:3500/get-user/${$("#user").val()}/`,
+          (status) => {
+            if (status) {
+              validate("user", true);
+              $("#user-label").text("* username does not exist");
+              doFocus = false;
+            }
+          }
+        );
+      }
+      if ($("#pass").val().length === 0) {
+        validate("pass", doFocus);
+        doFocus = false;
+      } else if (doFocus) {
+        $.get(
+          `http://localhost:3500/get-user/${$("#user").val()}/${$(
+            "#pass"
+          ).val()}/`,
+          (status) => {
+            if (!status) {
+              validate("pass", doFocus);
+              $("#pass-label").text("* password is incorrect");
+            } else {
+              doFocus = false;
+              $(this).submit();
+            }
+          }
+        );
+      }
+    } else localStorage.setItem("user", $("#user").val());
   });
 });

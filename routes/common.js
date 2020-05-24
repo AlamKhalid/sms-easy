@@ -6,7 +6,8 @@ router.get("/", (req, res) => {
 });
 
 router.get("/msg", (req, res) => {
-  res.render("msg");
+  const id = req.query.id;
+  res.render("msg", { id });
 });
 
 module.exports = router;

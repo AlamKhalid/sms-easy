@@ -1,7 +1,7 @@
 <%- include('./partials/header.ejs')%>
 <nav class="navbar fixed-top navbar-dark bg-dark">
   <a class="navbar-brand text-center" href="/"
-    ><i class="fa fa-envelope" aria-hidden="true"></i> SMS Easy</a
+    ><i class="fa fa-envelope"></i> SMS Easy</a
   >
 </nav>
 
@@ -14,9 +14,21 @@
     </p>
 
     <input id="fileToUpload" type="file" hidden />
-    <button id="uploadBtn" class="btn btn-msg mb-4 font-weight-bold">
-      <i class="fa fa-plus" aria-hidden="true"></i> Import File
-    </button>
+    <div class="w-100">
+      <button id="uploadBtn" class="btn btn-msg mb-4 font-weight-bold">
+        <i class="fa fa-plus" aria-hidden="true"></i> Import File
+      </button>
+      <% if(id) { %>
+      <i
+        class="fa fa-plus-circle ml-3 import-msg"
+        data-toggle-second="tooltip"
+        title="Import Message"
+        data-placement="bottom"
+        data-toggle="modal"
+        data-target="#import-msg-modal"
+      ></i>
+      <% } %>
+    </div>
 
     <div class="options d-flex justify-content-around">
       <label id="via"><strong>via: </strong></label>
@@ -48,4 +60,5 @@
     >
   </div>
 </section>
-<%- include('./partials/footer.ejs')%>
+
+<%- include('./import-msg.ejs') %> <%- include('./partials/footer.ejs')%>

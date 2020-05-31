@@ -2,10 +2,10 @@ const util = require("util");
 // mysql conn
 const mysql = require("mysql");
 const connection = mysql.createConnection({
-  host: "sql12.freemysqlhosting.net",
-  user: "sql12343205",
-  password: "JKizkHHzX7",
-  database: "sql12343205",
+  host: "localhost",
+  user: "root",
+  password: "0803",
+  database: "sms_easy",
 });
 connection.connect(function (err) {
   if (err) {

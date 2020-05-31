@@ -4,6 +4,12 @@ const bcrypt = require("bcrypt");
 const _ = require("lodash");
 const router = express.Router();
 
+router.get("/get-user/email/:emailid", async (req, res) => {
+  const email = req.params.emailid;
+  const row = await query(`SELECT id FROM users WHERE email='${email}'`);
+  res.send(_.isEmpty(row));
+});
+
 router.get("/get-user/:username/:password", async (req, res) => {
   const user = req.params.username;
   const pass = req.params.password;

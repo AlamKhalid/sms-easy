@@ -12,10 +12,10 @@ router.post("/register", async (req, res) => {
     await query(
       `INSERT INTO users VALUES('${id}', '${username}', '${email}', '${hashedPass}')`
     );
+    res.redirect(`/msg?id=${id}`);
   } catch (ex) {
     console.error(ex);
   }
-  res.redirect(`/msg?id=${id}`);
 });
 
 module.exports = router;

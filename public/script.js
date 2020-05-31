@@ -217,6 +217,17 @@ $(document).ready(function () {
     if ($("#r-email").val().length === 0) {
       validate("r-email", doFocus);
       doFocus = false;
+    } else {
+      $.get(
+        `http://localhost:3500/get-user/email/${$("#r-email").val()}/`,
+        (status) => {
+          if (!status) {
+            validate("r-email", true);
+            $("#r-email-label").text("* email already registered");
+            doFocus = false;
+          }
+        }
+      );
     }
     if ($("#r-pass").val().length === 0) {
       validate("r-pass", doFocus);
